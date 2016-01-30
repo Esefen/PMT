@@ -32,7 +32,7 @@ public class TriggerAttack : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 
 		Debug.Log("TriggerAttack");
-		if(isTriggered){ return; }
+		if(isTriggered || !other.CompareTag("Player") ){ return; }
 
 		// Activer les Bullets
 		foreach ( GameObject bullet in listBullet ) {

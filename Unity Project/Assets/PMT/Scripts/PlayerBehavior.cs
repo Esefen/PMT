@@ -5,12 +5,19 @@ using System.Collections;
 public class PlayerBehavior : MonoBehaviour {
 
     CharacterController cController;
-    public float BASE_SPEED = 0.1f;
+    CameraBehavior cam;
+    SpriteRenderer shield;
+    public Image hpBar;
+
+    public float BASE_SPEED = 10f;
     public float BASE_JUMP = 10.0f;
     public float JUMP_INPUT_MAX_LENGTH = 0.4f;
     public float JUMP_COOLDOWN_LENGTH = 0.3f;
     public float GRAVITY = 10.0f;
     public float SLIDE_LENGTH = 1.5f;
+    public float DASH_POWER = 3f;
+    float DASH_LENGTH = 0.3f;
+    public float DASH_COOLDOWN_LENGTH = 2.0f;
     public float INVULNERABILITY_LENGTH = 0.5f;
     float speed, jumpPower;
     bool inAir = true;
@@ -23,16 +30,17 @@ public class PlayerBehavior : MonoBehaviour {
     bool sliding = false;
     float slideTimer;
     float timerInvulnerability;
+    bool dashing = false, canDash = true;
+    float timerDash, timerDashCooldown;
+    float shieldPoints = 0;
 
 	public bool isPoisoned;
 	public float poisonDamage;
 
     public float hitPoints = 100;
     float MAX_HIT_POINTS = 100;
-    public Image hpBar;
-    CameraBehavior cam;
 
-    public float playerLevel = 1;
+    public int playerLevel = 1;
     public bool slideUnlocked = true;
     public bool doubleJumpUnlocked = true;
     public bool dashUnlocked = true;
@@ -45,6 +53,7 @@ public class PlayerBehavior : MonoBehaviour {
         speed = BASE_SPEED;
         jumpPower = BASE_JUMP;
         GetComponent<MeshRenderer>().sortingLayerName = "Player";
+        shield = transform.Find("Shield").GetComponent<SpriteRenderer>();
 	}
 	
 	// Update is called once per frame
@@ -63,6 +72,13 @@ public class PlayerBehavior : MonoBehaviour {
         }
         else speed = Mathf.Lerp(speed, BASE_SPEED, 0.1f);
         if (Input.GetAxis("Vertical") <= 0) upKeyReleased = true;
+
+        if (dashUnlocked && canDash && Input.GetKeyDown(KeyCode.E))
+        {
+            dashing = true;
+            canDash = false;
+            timerDash = Time.time;
+        }
 
         if (inAir)
         {
@@ -134,8 +150,23 @@ public class PlayerBehavior : MonoBehaviour {
         forwardMovement = Vector3.right * speed;
         //transform.position = Vector3.MoveTowards(transform.position, transform.position + Vector3.right * speed, 1);
         //transform.Translate(forwardMovement / 100.0f + verticalMovement);
-        transform.Translate(new Vector3(forwardMovement.x / 100.0f, verticalMovement.y, 0));
-	}
+        if (!dashing)
+        {
+            transform.Translate(new Vector3(forwardMovement.x / 100.0f, verticalMovement.y, 0));
+            if (Time.time - timerDashCooldown > DASH_COOLDOWN_LENGTH) canDash = true;
+        }
+        else
+        {
+            transform.Translate(new Vector3(BASE_SPEED * DASH_POWER / 100.0f, 0, 0));
+            if (Time.time - timerDash > DASH_LENGTH)
+            {
+                dashing = false;
+                timerDashCooldown = Time.time;
+            }
+        }
+    }
+
+    #region movement
 
     void slide()
     {
@@ -144,8 +175,6 @@ public class PlayerBehavior : MonoBehaviour {
         cController.height = 1;
         cController.center = new Vector3(0, -0.5f, 0);
     }
-
-    #region movement
 
     void OnCollisionEnter(Collision coll)
     {
@@ -177,11 +206,16 @@ public class PlayerBehavior : MonoBehaviour {
         if (Time.time - timerInvulnerability > INVULNERABILITY_LENGTH)
         {
             timerInvulnerability = Time.time;
-            hitPoints = Mathf.Clamp(hitPoints - damageValue, 0, MAX_HIT_POINTS);
-            refreshHitPoints();
-
-			if (damageValue >= MAX_HIT_POINTS/100)
-            cam.launchShake();
+            if (shieldUnlocked && shieldPoints > 0)
+            {
+                shieldPoints--;
+            }
+            else
+            {
+                hitPoints = Mathf.Clamp(hitPoints - damageValue, 0, MAX_HIT_POINTS);
+                refreshHitPoints();
+            }
+			if (damageValue >= MAX_HIT_POINTS/100) cam.launchShake();
         }
     }
 
@@ -196,4 +230,33 @@ public class PlayerBehavior : MonoBehaviour {
 	}
 
     #endregion
+
+    public void levelUp()
+    {
+        playerLevel++;
+        if (playerLevel > 9) shieldPoints++;
+        else 
+        switch (playerLevel)
+        {
+            case 2: BASE_SPEED *= 1.5f;
+                break;
+            case 3: slideUnlocked = true;
+                break;
+            case 4: BASE_JUMP *= 1.5f;
+                break;
+            case 5: doubleJumpUnlocked = true;
+                break;
+            case 6: BASE_JUMP *= 1.5f;
+                break;
+            case 7: dashUnlocked = true;
+                break;
+            case 8: DASH_POWER *= 1.5f;
+                break;
+            case 9: shieldUnlocked = true;
+                    shieldPoints = 1;
+                break;
+            default: Debug.LogError("PlayerBehavior, levelUp: Incorrect level increase");
+                break;
+        }
+    }
 }
