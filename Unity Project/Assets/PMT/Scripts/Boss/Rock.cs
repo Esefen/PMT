@@ -24,7 +24,7 @@ public class Rock : MonoBehaviour {
 	{
 		if (other.gameObject.tag == "Player")
 		{
-			DamagePlayer();
+			other.gameObject.GetComponent<PlayerBehavior>().inflictDamage(Damage);
 			Destroy(gameObject);
 		}
 		else if (other.gameObject.tag == "Ground" && isBoosted == false)
@@ -35,9 +35,5 @@ public class Rock : MonoBehaviour {
 		{
 			isGrounded = true;
 		}
-	}
-	
-	void DamagePlayer()
-	{
 	}
 }

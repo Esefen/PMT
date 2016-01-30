@@ -12,4 +12,12 @@ public class PoisonJelly : MonoBehaviour {
 	void Update () {
 	
 	}
+
+	void OnTriggerEnter(Collider other)
+	{
+		if (other.gameObject.tag == "Player")
+		{
+			other.gameObject.GetComponent<PlayerBehavior>().isPoisoned = true;
+		}
+	}
 }

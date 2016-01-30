@@ -18,6 +18,9 @@ public class PlayerBehavior : MonoBehaviour {
     Vector3 forwardMovement, verticalMovement = Vector3.zero;
     float timerJumpPower, timerJumpCooldown, timerGravityKick;
 
+	public bool isPoisoned;
+	public float poisonDamage;
+
     public float hitPoints = 100;
     float MAX_HIT_POINTS = 100;
     public Image hpBar;
@@ -35,6 +38,12 @@ public class PlayerBehavior : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		if (isPoisoned == true)
+		{
+			Poisoned();
+		}
+
         if (Input.GetKeyDown(KeyCode.A))
         {
             inflictDamage(5);
@@ -141,6 +150,7 @@ public class PlayerBehavior : MonoBehaviour {
     {
         hitPoints = Mathf.Clamp(hitPoints - damageValue, 0, MAX_HIT_POINTS);
         refreshHitPoints();
+		if (damageValue >= MAX_HIT_POINTS/100)
         cam.launchShake();
     }
 
@@ -148,6 +158,12 @@ public class PlayerBehavior : MonoBehaviour {
     {
         hpBar.fillAmount = hitPoints / MAX_HIT_POINTS;
     }
+
+	void Poisoned()
+	{
+		inflictDamage(poisonDamage);
+		Debug.Log("empoisonné");
+	}
 
     #endregion
 }
