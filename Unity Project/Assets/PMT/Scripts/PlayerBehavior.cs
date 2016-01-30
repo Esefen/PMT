@@ -11,6 +11,8 @@ public class PlayerBehavior : MonoBehaviour {
     public float JUMP_COOLDOWN_LENGTH = 0.3f;
     public float GRAVITY = 10.0f;
     public float SLIDE_LENGTH = 1.5f;
+    public float DASH_LENGTH = 0.3f;
+    public float DASH_COOLDOWN_LENGTH = 2.0f;
     public float INVULNERABILITY_LENGTH = 0.5f;
     float speed, jumpPower;
     bool inAir = true;
@@ -23,6 +25,8 @@ public class PlayerBehavior : MonoBehaviour {
     bool sliding = false;
     float slideTimer;
     float timerInvulnerability;
+    bool dashing = false, canDash = true;
+    float timerDash, timerDashCooldown;
 
     public float hitPoints = 100;
     float MAX_HIT_POINTS = 100;
@@ -60,6 +64,13 @@ public class PlayerBehavior : MonoBehaviour {
         }
         else speed = Mathf.Lerp(speed, BASE_SPEED, 0.1f);
         if (Input.GetAxis("Vertical") <= 0) upKeyReleased = true;
+
+        if (dashUnlocked && canDash && Input.GetKeyDown(KeyCode.E))
+        {
+            dashing = true;
+            canDash = false;
+            timerDash = Time.time;
+        }
 
         if (inAir)
         {
@@ -131,7 +142,20 @@ public class PlayerBehavior : MonoBehaviour {
         forwardMovement = Vector3.right * speed;
         //transform.position = Vector3.MoveTowards(transform.position, transform.position + Vector3.right * speed, 1);
         //transform.Translate(forwardMovement / 100.0f + verticalMovement);
-        transform.Translate(new Vector3(forwardMovement.x / 100.0f, verticalMovement.y, 0));
+        if (!dashing)
+        {
+            transform.Translate(new Vector3(forwardMovement.x / 100.0f, verticalMovement.y, 0));
+            if (Time.time - timerDashCooldown > DASH_COOLDOWN_LENGTH) canDash = true;
+        }
+        else
+        {
+            transform.Translate(new Vector3(BASE_SPEED * 3.0f / 100.0f, 0, 0));
+            if (Time.time - timerDash > DASH_LENGTH)
+            {
+                dashing = false;
+                timerDashCooldown = Time.time;
+            }
+        }
 	}
 
     void slide()
