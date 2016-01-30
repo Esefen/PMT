@@ -21,13 +21,9 @@ public class Bullet : MonoBehaviour {
 	{
 		if (other.gameObject.tag == "Player")
 		{
-			DamagePlayer();
+			other.gameObject.GetComponent<PlayerBehavior>().inflictDamage(Damage);
 			this.Destroy(gameObject);
 		}
-	}
-	
-	void DamagePlayer()
-	{
 	}
 
 	void lifeEnd()
