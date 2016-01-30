@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class TriggerAttack : MonoBehaviour {
-
+	[Tooltip("Soit mettre les bullets en fils du trigger, soit les mettre dans cette liste")]
 	public GameObject[] listBullet;
 	bool isTriggered = false;
 
@@ -31,7 +31,7 @@ public class TriggerAttack : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 
-		Debug.Log("OnTriggerEnter");
+		Debug.Log("TriggerAttack");
 		if(isTriggered){ return; }
 
 		// Activer les Bullets

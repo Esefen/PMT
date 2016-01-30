@@ -5,6 +5,9 @@ public class Rock : MonoBehaviour {
 	
 	public float Speed;
 	public float Damage;
+
+	public bool isBoosted;
+	public bool isGrounded;
 	
 	// Use this for initialization
 	void Start () {
@@ -13,6 +16,7 @@ public class Rock : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (isGrounded == false)
 		transform.localPosition -= transform.up * Speed * Time.deltaTime;
 	}
 	
@@ -21,10 +25,15 @@ public class Rock : MonoBehaviour {
 		if (other.gameObject.tag == "Player")
 		{
 			DamagePlayer();
+			Destroy(gameObject);
 		}
-		else if (other.gameObject.tag == "Ground")
+		else if (other.gameObject.tag == "Ground" && isBoosted == false)
 		{
 			Destroy(gameObject);
+		}
+		else if (other.gameObject.tag=="Ground" && isBoosted == true)
+		{
+			isGrounded = true;
 		}
 	}
 	
