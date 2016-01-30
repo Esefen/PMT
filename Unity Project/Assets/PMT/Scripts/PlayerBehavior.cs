@@ -15,7 +15,7 @@ public class PlayerBehavior : MonoBehaviour {
     bool apexReached = true;
     bool jumpCooldown = true;
     bool doubleJumpCooldown = true;
-    Vector3 forwardMovement, verticalMovement;
+    Vector3 forwardMovement, verticalMovement = Vector3.zero;
     float timerJumpPower, timerJumpCooldown, timerGravityKick;
 
     public float hitPoints = 100;
@@ -41,29 +41,17 @@ public class PlayerBehavior : MonoBehaviour {
         }
         if (Input.GetAxis("Horizontal") != 0)
         {
-            if (Input.GetAxis("Horizontal") < 0)
-            {
-                speed -= BASE_SPEED / 30.0f;
-                //cam.changeXOffset((speed - BASE_SPEED) / BASE_SPEED);
-            }
-            else
-            {
-                speed += BASE_SPEED / 30.0f;
-                //cam.changeXOffset((speed - BASE_SPEED) / BASE_SPEED);
-            }
+            if (Input.GetAxis("Horizontal") < 0) speed -= BASE_SPEED / 30.0f;
+            else speed += BASE_SPEED / 30.0f;
             speed = Mathf.Clamp(speed, BASE_SPEED / 2.0f, BASE_SPEED * 2.0f);
+            cam.changeXOffset((speed - BASE_SPEED) / BASE_SPEED);
         }
-        else
-        {
-            speed = Mathf.Lerp(speed, BASE_SPEED, 0.1f);
-        }
-        cam.changeXOffset((speed - BASE_SPEED) / BASE_SPEED);
+        else speed = Mathf.Lerp(speed, BASE_SPEED, 0.1f);
 
         if (inAir)
         {
             if (!apexReached)
             {
-                /*
                 if (Input.GetAxis("Vertical") > 0)
                 {
                     jumpPower = Mathf.Lerp(BASE_JUMP, 0, Time.time - timerJumpPower);
@@ -78,7 +66,6 @@ public class PlayerBehavior : MonoBehaviour {
                 }
 
                 if (apexReached) timerGravityKick = Time.time;
-                */
             }
             else
             {
@@ -92,14 +79,14 @@ public class PlayerBehavior : MonoBehaviour {
         }
         else
         {
-            /*
-            if (Time.time - timerJumpCooldown > JUMP_COOLDOWN_LENGTH)
+            // Reset jump cooldown
+            if (Time.time - timerJumpCooldown > JUMP_COOLDOWN_LENGTH && Input.GetAxis("Vertical") <= 0)
             {
                 jumpCooldown = false;
                 doubleJumpCooldown = false;
                 jumpPower = BASE_JUMP;
-                verticalMovement = Vector3.up * jumpPower;
             }
+            // Jump
             if (!jumpCooldown && Input.GetAxis("Vertical") > 0)
             {
                 if (!inAir)
@@ -111,11 +98,16 @@ public class PlayerBehavior : MonoBehaviour {
                 jumpPower = BASE_JUMP;
                 verticalMovement = Vector3.up * jumpPower;
             }
-             * */
+            // Slide
+            else if (Input.GetAxis("Vertical") < 0)
+            {
+
+            }
         }
         forwardMovement = Vector3.right * speed;
         //transform.position = Vector3.MoveTowards(transform.position, transform.position + Vector3.right * speed, 1);
-        transform.Translate(forwardMovement / 100.0f + verticalMovement);
+        //transform.Translate(forwardMovement / 100.0f + verticalMovement);
+        transform.Translate(new Vector3(forwardMovement.x / 100.0f, verticalMovement.y, 0));
 	}
 
     #region movement
@@ -149,6 +141,7 @@ public class PlayerBehavior : MonoBehaviour {
     {
         hitPoints = Mathf.Clamp(hitPoints - damageValue, 0, MAX_HIT_POINTS);
         refreshHitPoints();
+        cam.launchShake();
     }
 
     void refreshHitPoints()
