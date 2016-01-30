@@ -5,15 +5,16 @@ public class Bullet : MonoBehaviour {
 	
 	public float Speed;
 	public float Damage;
+	public float lifeTime;
 	
 	// Use this for initialization
 	void Start () {
-		
+		Invoke("lifeEnd", lifeTime);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		transform.localPosition -= transform.right * Speed * Time.deltaTime;
+		transform.position -= transform.right * Speed * Time.deltaTime;
 	}
 	
 	void OnTriggerEnter(Collider other)
@@ -21,11 +22,17 @@ public class Bullet : MonoBehaviour {
 		if (other.gameObject.tag == "Player")
 		{
 			DamagePlayer();
+			this.Destroy(gameObject);
 		}
 	}
 	
 	void DamagePlayer()
 	{
+	}
+
+	void lifeEnd()
+	{
+		this.Destroy(gameObject);
 	}
 }
 
