@@ -8,7 +8,7 @@ public class PlayerBehavior : MonoBehaviour {
     public float BASE_SPEED = 0.1f;
     public float BASE_JUMP = 10.0f;
     public float JUMP_INPUT_MAX_LENGTH = 0.4f;
-    public float JUMP_COOLDOWN_LENGTH = 0.5f;
+    public float JUMP_COOLDOWN_LENGTH = 0.3f;
     public float GRAVITY = 10.0f;
     public float SLIDE_LENGTH = 1.5f;
     public float INVULNERABILITY_LENGTH = 0.5f;
@@ -118,17 +118,14 @@ public class PlayerBehavior : MonoBehaviour {
             // Slide
             else if (!sliding)
             {
-                if (slideUnlocked && Input.GetAxis("Vertical") < 0)
-                {
-                    sliding = true;
-                    slideTimer = Time.time;
-                    cController.enabled = false;
-                }
+                if (slideUnlocked && Input.GetAxis("Vertical") < 0) slide();
             }
             else if (Time.time - slideTimer > SLIDE_LENGTH)
             {
                 sliding = false;
                 cController.enabled = true;
+                cController.height = 2;
+                cController.center = Vector3.zero;
             }
         }
         forwardMovement = Vector3.right * speed;
@@ -136,6 +133,14 @@ public class PlayerBehavior : MonoBehaviour {
         //transform.Translate(forwardMovement / 100.0f + verticalMovement);
         transform.Translate(new Vector3(forwardMovement.x / 100.0f, verticalMovement.y, 0));
 	}
+
+    void slide()
+    {
+        sliding = true;
+        slideTimer = Time.time;
+        cController.height = 1;
+        cController.center = new Vector3(0, -0.5f, 0);
+    }
 
     #region movement
 
@@ -168,6 +173,7 @@ public class PlayerBehavior : MonoBehaviour {
     {
         if (Time.time - timerInvulnerability > INVULNERABILITY_LENGTH)
         {
+            timerInvulnerability = Time.time;
             hitPoints = Mathf.Clamp(hitPoints - damageValue, 0, MAX_HIT_POINTS);
             refreshHitPoints();
             cam.launchShake();
