@@ -24,6 +24,9 @@ public class PlayerBehavior : MonoBehaviour {
     float slideTimer;
     float timerInvulnerability;
 
+	public bool isPoisoned;
+	public float poisonDamage;
+
     public float hitPoints = 100;
     float MAX_HIT_POINTS = 100;
     public Image hpBar;
@@ -176,6 +179,8 @@ public class PlayerBehavior : MonoBehaviour {
             timerInvulnerability = Time.time;
             hitPoints = Mathf.Clamp(hitPoints - damageValue, 0, MAX_HIT_POINTS);
             refreshHitPoints();
+
+			if (damageValue >= MAX_HIT_POINTS/100)
             cam.launchShake();
         }
     }
@@ -184,6 +189,11 @@ public class PlayerBehavior : MonoBehaviour {
     {
         hpBar.fillAmount = hitPoints / MAX_HIT_POINTS;
     }
+
+	void Poisoned()
+	{
+		inflictDamage(poisonDamage);
+	}
 
     #endregion
 }
