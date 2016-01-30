@@ -12,6 +12,11 @@ public class CameraBehavior : MonoBehaviour {
     float shakeAmount = 2.0f;
     float screenSize;
 
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
 	// Use this for initialization
 	void Start () {
         player = GameObject.FindGameObjectWithTag("Player").transform;

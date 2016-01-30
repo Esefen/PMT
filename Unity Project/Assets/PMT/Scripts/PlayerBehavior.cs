@@ -5,6 +5,10 @@ using System.Collections;
 public class PlayerBehavior : MonoBehaviour {
 
     CharacterController cController;
+    CameraBehavior cam;
+    SpriteRenderer shield;
+    public Image hpBar;
+
     public float BASE_SPEED = 10f;
     public float BASE_JUMP = 10.0f;
     public float JUMP_INPUT_MAX_LENGTH = 0.4f;
@@ -35,9 +39,6 @@ public class PlayerBehavior : MonoBehaviour {
 
     public float hitPoints = 100;
     float MAX_HIT_POINTS = 100;
-    public Image hpBar;
-    public Image shield;
-    CameraBehavior cam;
 
     public int playerLevel = 1;
     public bool slideUnlocked = true;
@@ -52,6 +53,7 @@ public class PlayerBehavior : MonoBehaviour {
         speed = BASE_SPEED;
         jumpPower = BASE_JUMP;
         GetComponent<MeshRenderer>().sortingLayerName = "Player";
+        shield = transform.Find("Shield").GetComponent<SpriteRenderer>();
 	}
 	
 	// Update is called once per frame
