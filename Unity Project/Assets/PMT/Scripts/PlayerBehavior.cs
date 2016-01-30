@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class PlayerBehavior : MonoBehaviour {
@@ -17,6 +18,10 @@ public class PlayerBehavior : MonoBehaviour {
     Vector3 forwardMovement, verticalMovement;
     float timerJumpPower, timerJumpCooldown;
 
+    public float hitPoints = 100;
+    float MAX_HIT_POINTS = 100;
+    public Image hpBar;
+
 	// Use this for initialization
 	void Start () {
         cController = GetComponent<CharacterController>();
@@ -28,6 +33,10 @@ public class PlayerBehavior : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            inflictDamage(5);
+        }
         if (Input.GetAxis("Horizontal") != 0)
         {
             if (Input.GetAxis("Horizontal") < 0) speed -= BASE_SPEED / 30.0f;
@@ -69,6 +78,8 @@ public class PlayerBehavior : MonoBehaviour {
         transform.Translate(forwardMovement / 100.0f + verticalMovement);
 	}
 
+    #region movement
+
     void jump()
     {
         Debug.Log("jump");
@@ -84,22 +95,38 @@ public class PlayerBehavior : MonoBehaviour {
     void OnCollisionEnter(Collision coll)
     {
         Debug.Log("collision");
-        if (coll.gameObject.tag == "Ground")
-        {
-            inAir = false;
-        }
+        if (coll.gameObject.tag == "Ground") groundTouched();
     }
 
     void OnTriggerEnter(Collider other)
     {
         Debug.Log("trigger");
-        if (other.CompareTag("Ground"))
-        {
-            inAir = false;
-            apexReached = false;
-            timerJumpCooldown = Time.time;
-            verticalMovement = Vector3.zero;
-            cController.SimpleMove(Vector3.down);
-        }
+        if (other.CompareTag("Ground")) groundTouched();
     }
+
+    void groundTouched()
+    {
+        inAir = false;
+        apexReached = false;
+        timerJumpCooldown = Time.time;
+        verticalMovement = Vector3.zero;
+        cController.SimpleMove(Vector3.down);
+    }
+
+    #endregion
+
+    #region damage
+
+    public void inflictDamage(float damageValue)
+    {
+        hitPoints = Mathf.Clamp(hitPoints - damageValue, 0, MAX_HIT_POINTS);
+        refreshHitPoints();
+    }
+
+    void refreshHitPoints()
+    {
+        hpBar.fillAmount = hitPoints / MAX_HIT_POINTS;
+    }
+
+    #endregion
 }
