@@ -9,20 +9,26 @@ public class DoorCrossed : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D collider)
 	{
-
+		if (collider.gameObject.name == "porte+")
+		{
 		Door porte = collider.gameObject.GetComponent<Door>();
 		if (porte != false) 
 		{
-			
-			//transform.position = new Vector3 (-10, transform.position.y, transform.position.z);
 			NombreDoor ++;
 			string NameRoom = "Room0"+DoorCrossed.NombreDoor;
 			Application.LoadLevel (NameRoom);
-
-			
-
 		}
-	}
+		}
+		else if (collider.gameObject.name == "porte-")
+		{
+				Door porte = collider.gameObject.GetComponent<Door>();
+				if (porte != false) 
+				{
+					string NameRoom = "Room0"+DoorCrossed.NombreDoor;
+					Application.LoadLevel (NameRoom);
+				}
+			}
+		}
 	// Use this for initialization
 	void Start () {
 
