@@ -54,10 +54,15 @@ public class PlayerBehavior : MonoBehaviour {
     public bool shieldUnlocked = true;
     bool dead = false;
 
+    void OnLevelWasLoaded()
+    {
+        findCameraReference();
+    }
+
 	// Use this for initialization
 	void Start () {
         cController = GetComponent<CharacterController>();
-        cam = Camera.main.GetComponent<CameraBehavior>();
+        findCameraReference();
         speed = BASE_SPEED;
         jumpPower = BASE_JUMP;
         GetComponent<MeshRenderer>().sortingLayerName = "Player";
@@ -194,6 +199,11 @@ public class PlayerBehavior : MonoBehaviour {
         }
     }
 
+    public void findCameraReference()
+    {
+        cam = Camera.main.GetComponent<CameraBehavior>();
+    }
+
     #region movement
 
     void slide()
@@ -284,7 +294,7 @@ public class PlayerBehavior : MonoBehaviour {
             yield return new WaitForSeconds(0.05f);
             StartCoroutine(deathSequence(newTimeScale - 0.1f));
         }
-        else Application.LoadLevel(0);
+        else Application.LoadLevel("GameOver");
     }
 
     void refreshHitPoints()
