@@ -226,6 +226,7 @@ public class PlayerBehavior : MonoBehaviour {
     {
         if (Time.time - timerInvulnerability > INVULNERABILITY_LENGTH)
         {
+            speed /= 10.0f;
             timerInvulnerability = Time.time;
             if (shieldUnlocked && shieldPoints > 0)
             {
@@ -235,10 +236,17 @@ public class PlayerBehavior : MonoBehaviour {
             {
                 hitPoints = Mathf.Clamp(hitPoints - damageValue, 0, MAX_HIT_POINTS);
                 refreshHitPoints();
+                anim.SetBool("tookDamage", true);
+                Invoke("resetDamageFeedbackAnimation", 0.1f);
             }
             if (hitPoints == 0) death();
             else if (damageValue >= MAX_HIT_POINTS / 100) cam.launchShake();
         }
+    }
+
+    void resetDamageFeedbackAnimation()
+    {
+        anim.SetBool("tookDamage", false);
     }
 
     void death()
