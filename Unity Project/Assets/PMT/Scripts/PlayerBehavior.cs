@@ -54,6 +54,8 @@ public class PlayerBehavior : MonoBehaviour {
     public bool shieldUnlocked = true;
     bool dead = false;
 
+    float yJumpReference = -1;
+
     void OnLevelWasLoaded()
     {
         findCameraReference();
@@ -103,6 +105,7 @@ public class PlayerBehavior : MonoBehaviour {
         {
             if (!apexReached)
             {
+                /*
                 if (!jumpImpulsionOver)
                 {
                     if (Input.GetAxis("Vertical") <= 0)
@@ -128,6 +131,7 @@ public class PlayerBehavior : MonoBehaviour {
                     else jumpPower = Mathf.Lerp(BASE_JUMP, 0, Time.time - timerJump);
                     if (jumpPower <= 0) apexReached = true;
                 }
+                */
                 verticalMovement = Vector3.up * jumpPower;
 
                 if (apexReached)
@@ -181,6 +185,11 @@ public class PlayerBehavior : MonoBehaviour {
         if (!dashing)
         {
             transform.Translate(new Vector3(forwardMovement.x / 100.0f, verticalMovement.y, 0));
+            if (yJumpReference != -1)
+            {
+                transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, yJumpReference, yJumpReference * 2.5f), transform.position.z);
+                if (Mathf.Approximately(transform.position.y, yJumpReference * 2.5f)) apexReached = true;
+            }
             if (Time.time - timerDashCooldown > DASH_COOLDOWN_LENGTH) canDash = true;
         }
         else
@@ -234,6 +243,7 @@ public class PlayerBehavior : MonoBehaviour {
 
     void groundTouched()
     {
+        yJumpReference = transform.position.y;
         inAir = false;
         apexReached = false;
         timerJumpCooldown = Time.time;
