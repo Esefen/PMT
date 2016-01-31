@@ -66,8 +66,8 @@ public class PlayerBehavior : MonoBehaviour {
     void OnLevelWasLoaded()
     {
         findCameraReference();
-        transform.position = new Vector3(-15, transform.position.y, transform.position.z);
-        cam.transform.position = new Vector3(-45, cam.transform.position.y, cam.transform.position.z);
+        transform.position = new Vector3(-35, transform.position.y, transform.position.z);
+        //cam.transform.position = new Vector3(-45, cam.transform.position.y, cam.transform.position.z);
     }
 
 	// Use this for initialization
