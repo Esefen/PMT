@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour {
 
@@ -44,10 +45,15 @@ public class MenuManager : MonoBehaviour {
 	
 		if (Input.GetKeyDown(KeyCode.Return))
 		{
-			if (onPlay == true)
-				Application.LoadLevel("Room01");
-			else if (onPlay == false)
-				Application.LoadLevel("Credits");
+			if (onPlay == true){
+				Debug.Log("LoadScene(\"Room01\")");
+				// Application.LoadLevel("Room01");
+				SceneManager.LoadScene("Room01");
+			} else if (onPlay == false){
+				Debug.Log("LoadScene(\"Credits\")");
+				// Application.LoadLevel("Credits");
+				SceneManager.LoadScene("Credits");
+			}
 		}
 
 	}
