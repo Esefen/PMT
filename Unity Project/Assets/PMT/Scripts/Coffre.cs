@@ -20,7 +20,6 @@ public class Coffre : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		Fading.blackening = 2;
 		Debug.Log("Coffre");
 		if(isTriggered || !other.CompareTag("Player") ){ return; }
 

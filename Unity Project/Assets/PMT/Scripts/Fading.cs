@@ -29,7 +29,7 @@ public class Fading : MonoBehaviour {
 		}
 		if (blackening == 2)
 		{
-			alpha += 0.1f;
+			alpha += 0.05f;
 			image.color = new Color(0,0,0,alpha);
 			if (alpha >= 1)
 				blackening = 0;

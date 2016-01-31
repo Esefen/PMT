@@ -7,9 +7,10 @@ public class DoorCrossed : MonoBehaviour {
 
 	public static int NombreDoor = 1;
 
-	void OnTriggerEnter2D(Collider2D collider)
+
+	void OnTriggerEnter(Collider collider)
 	{
-		if (collider.gameObject.name == "porte+")
+		if (collider.gameObject.name == "door+")
 		{
 			GameManager.roomsDone += 1;
 			Fading.blackening = 2;
@@ -26,9 +27,10 @@ public class DoorCrossed : MonoBehaviour {
 			Application.LoadLevel (NameRoom);
 		}
 		}
-		else if (collider.gameObject.name == "porte-")
+		else if (collider.gameObject.name == "door-")
 		{
 			GameManager.roomsDone += 1;
+			Fading.blackening = 2;
 				Door porte = collider.gameObject.GetComponent<Door>();
 				if (porte != false) 
 				{
