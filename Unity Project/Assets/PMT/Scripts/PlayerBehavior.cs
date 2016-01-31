@@ -54,10 +54,17 @@ public class PlayerBehavior : MonoBehaviour {
     public bool shieldUnlocked = true;
     bool dead = false;
 
+    float yJumpReference = -1;
+
+    void OnLevelWasLoaded()
+    {
+        findCameraReference();
+    }
+
 	// Use this for initialization
 	void Start () {
         cController = GetComponent<CharacterController>();
-        cam = Camera.main.GetComponent<CameraBehavior>();
+        findCameraReference();
         speed = BASE_SPEED;
         jumpPower = BASE_JUMP;
         GetComponent<MeshRenderer>().sortingLayerName = "Player";
@@ -67,11 +74,6 @@ public class PlayerBehavior : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            inflictDamage(5);
-        }
-
         if (!dead)
         {
             if (Input.GetAxis("Horizontal") != 0)
@@ -103,12 +105,13 @@ public class PlayerBehavior : MonoBehaviour {
         {
             if (!apexReached)
             {
+                /*
                 if (!jumpImpulsionOver)
                 {
                     if (Input.GetAxis("Vertical") <= 0)
                     {
                         jumpImpulsionOver = true;
-                        timerJumpImpulsionCarry = Time.time;
+                        //timerJumpImpulsionCarry = Time.time;
                     }
                     else if (Time.time - timerJump > JUMP_INPUT_MAX_LENGTH)
                     {
@@ -120,12 +123,15 @@ public class PlayerBehavior : MonoBehaviour {
                 }
                 else
                 {
-                    Debug.Log(timerJumpImpulsionCarry + " ; " + timerJump);
-                    float jumpLengthReducer = 1.0f;
+                    //Debug.Log(timerJumpImpulsionCarry + " ; " + timerJump);
+                    //float jumpLengthReducer = 1.0f;
                     //if (timerJumpImpulsionCarry > timerJump) jumpLengthReducer *= (timerJumpImpulsionCarry - timerJump);
-                    jumpPower = Mathf.Lerp(BASE_JUMP, 0, (Time.time - timerJump) * jumpLengthReducer);
+                    //jumpPower = Mathf.Lerp(BASE_JUMP, 0, (Time.time - timerJump) * jumpLengthReducer);
+                    if (timerJumpImpulsionCarry > timerJump) jumpPower = Mathf.Lerp(BASE_JUMP, 0, Time.time - timerJumpImpulsionCarry);
+                    else jumpPower = Mathf.Lerp(BASE_JUMP, 0, Time.time - timerJump);
                     if (jumpPower <= 0) apexReached = true;
                 }
+                */
                 verticalMovement = Vector3.up * jumpPower;
 
                 if (apexReached)
@@ -175,11 +181,15 @@ public class PlayerBehavior : MonoBehaviour {
             else if (Time.time - slideTimer > SLIDE_LENGTH) endSliding();
         }
         forwardMovement = Vector3.right * speed;
-        //transform.position = Vector3.MoveTowards(transform.position, transform.position + Vector3.right * speed, 1);
-        //transform.Translate(forwardMovement / 100.0f + verticalMovement);
+
         if (!dashing)
         {
             transform.Translate(new Vector3(forwardMovement.x / 100.0f, verticalMovement.y, 0));
+            if (yJumpReference != -1)
+            {
+                transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, yJumpReference, yJumpReference * 2.5f), transform.position.z);
+                if (Mathf.Approximately(transform.position.y, yJumpReference * 2.5f)) apexReached = true;
+            }
             if (Time.time - timerDashCooldown > DASH_COOLDOWN_LENGTH) canDash = true;
         }
         else
@@ -192,6 +202,11 @@ public class PlayerBehavior : MonoBehaviour {
                 anim.SetBool("dashing", false);
             }
         }
+    }
+
+    public void findCameraReference()
+    {
+        cam = Camera.main.GetComponent<CameraBehavior>();
     }
 
     #region movement
@@ -228,6 +243,7 @@ public class PlayerBehavior : MonoBehaviour {
 
     void groundTouched()
     {
+        yJumpReference = transform.position.y;
         inAir = false;
         apexReached = false;
         timerJumpCooldown = Time.time;
@@ -284,7 +300,7 @@ public class PlayerBehavior : MonoBehaviour {
             yield return new WaitForSeconds(0.05f);
             StartCoroutine(deathSequence(newTimeScale - 0.1f));
         }
-        else Application.LoadLevel(0);
+        else Application.LoadLevel("GameOver");
     }
 
     void refreshHitPoints()

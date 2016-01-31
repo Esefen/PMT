@@ -14,7 +14,7 @@ public class Fading : MonoBehaviour {
 	void Start () {
 		image = blackScreen.GetComponent<Image>();
 	}
-	
+		
 	// Update is called once per frame
 	void Update () {
 		if (blackening == 0)
