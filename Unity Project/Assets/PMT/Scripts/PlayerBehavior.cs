@@ -28,11 +28,12 @@ public class PlayerBehavior : MonoBehaviour {
     float speed, jumpPower;
     bool inAir = true;
     bool apexReached = true;
+    bool jumpImpulsionOver = true;
     bool jumpCooldown = true;
     bool doubleJumpCooldown = true;
     bool upKeyReleased = true;
     Vector3 forwardMovement, verticalMovement = Vector3.zero;
-    float timerJumpPower, timerJumpCooldown, timerGravityKick;
+    float timerJump, timerJumpCooldown, timerJumpImpulsionCarry, timerGravityKick;
     bool sliding = false;
     float slideTimer;
     float timerInvulnerability;
@@ -102,30 +103,47 @@ public class PlayerBehavior : MonoBehaviour {
         {
             if (!apexReached)
             {
-                if (Input.GetAxis("Vertical") > 0)
+                if (!jumpImpulsionOver)
                 {
-                    jumpPower = Mathf.Lerp(BASE_JUMP, 0, Time.time - timerJumpPower);
+                    if (Input.GetAxis("Vertical") <= 0)
+                    {
+                        jumpImpulsionOver = true;
+                        timerJumpImpulsionCarry = Time.time;
+                    }
+                    else if (Time.time - timerJump > JUMP_INPUT_MAX_LENGTH)
+                    {
+                        jumpImpulsionOver = true;
+                        timerJumpImpulsionCarry = Time.time;
+                        Debug.Log("long touch");
+                    }
+                    //if (jumpImpulsionOver) timerJumpImpulsionCarry = Time.time;
                 }
-                else apexReached = true;
+                else
+                {
+                    Debug.Log(timerJumpImpulsionCarry + " ; " + timerJump);
+                    float jumpLengthReducer = 1.0f;
+                    //if (timerJumpImpulsionCarry > timerJump) jumpLengthReducer *= (timerJumpImpulsionCarry - timerJump);
+                    jumpPower = Mathf.Lerp(BASE_JUMP, 0, (Time.time - timerJump) * jumpLengthReducer);
+                    if (jumpPower <= 0) apexReached = true;
+                }
                 verticalMovement = Vector3.up * jumpPower;
 
-                if (Time.time - timerJumpPower > JUMP_INPUT_MAX_LENGTH)
+                if (apexReached)
                 {
-                    verticalMovement = Vector3.zero;
-                    apexReached = true;
+                    timerGravityKick = Time.time;
+                    jumpImpulsionOver = false;
                 }
-
-                if (apexReached) timerGravityKick = Time.time;
             }
             else
             {
                 verticalMovement = Vector3.down * Mathf.Clamp(Mathf.Lerp(0, GRAVITY, Time.time - timerGravityKick), 0, GRAVITY);
             }
+
             if (upKeyReleased && doubleJumpUnlocked && !doubleJumpCooldown && Input.GetAxis("Vertical") > 0)
             {
                 doubleJumpCooldown = true;
                 apexReached = false;
-                timerJumpPower = Time.time;
+                timerJump = Time.time;
             }
         }
         else
@@ -144,7 +162,7 @@ public class PlayerBehavior : MonoBehaviour {
                 inAir = true;
                 jumpCooldown = true;
                 upKeyReleased = false;
-                timerJumpPower = Time.time;
+                timerJump = Time.time;
                 jumpPower = BASE_JUMP;
                 verticalMovement = Vector3.up * jumpPower;
                 anim.SetBool("jumping", true);
