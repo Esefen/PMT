@@ -72,6 +72,12 @@ public class PlayerBehavior : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		if (hitPoints <= 1)
+		{
+			isPoisoned = false;
+		}
+
         if (Input.GetKeyDown(KeyCode.A))
         {
             inflictDamage(5);
@@ -323,8 +329,8 @@ public class PlayerBehavior : MonoBehaviour {
                 break;
             case 4: BASE_JUMP *= 1.5f;
                 break;
-            case 5: doubleJumpUnlocked = true;
-			TextBox2.SetActive(true);
+            case 5:
+			BASE_SPEED *= 1.5f;
                 break;
             case 6: BASE_JUMP *= 1.5f;
                 break;

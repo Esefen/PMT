@@ -21,6 +21,7 @@ public class Bullet : MonoBehaviour {
 	{
 		if (other.gameObject.tag == "Player")
 		{
+			Debug.Log("collide");
 			other.gameObject.GetComponent<PlayerBehavior>().inflictDamage(Damage);
 			this.Destroy(gameObject);
 		}
