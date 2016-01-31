@@ -7,6 +7,7 @@ public class PlayerBehavior : MonoBehaviour {
     CharacterController cController;
     CameraBehavior cam;
     SpriteRenderer shield;
+    Animator anim;
     public Image hpBar;
 
     public float BASE_SPEED = 10f;
@@ -54,6 +55,7 @@ public class PlayerBehavior : MonoBehaviour {
         jumpPower = BASE_JUMP;
         GetComponent<MeshRenderer>().sortingLayerName = "Player";
         shield = transform.Find("Shield").GetComponent<SpriteRenderer>();
+        anim = transform.Find("Mesh").GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
@@ -68,9 +70,15 @@ public class PlayerBehavior : MonoBehaviour {
             if (Input.GetAxis("Horizontal") < 0) speed -= BASE_SPEED / 30.0f;
             else speed += BASE_SPEED / 30.0f;
             speed = Mathf.Clamp(speed, BASE_SPEED / 2.0f, BASE_SPEED * 2.0f);
-            cam.changeXOffset((speed - BASE_SPEED) / BASE_SPEED);
+            float speedModifier = (speed - BASE_SPEED) / BASE_SPEED;
+            cam.changeXOffset(speedModifier);
+            anim.SetFloat("speed", Mathf.Clamp(1.0f + (speed - BASE_SPEED) / BASE_SPEED, 0.5f, 1.3f));
         }
-        else speed = Mathf.Lerp(speed, BASE_SPEED, 0.1f);
+        else
+        {
+            speed = Mathf.Lerp(speed, BASE_SPEED, 0.1f);
+            anim.SetFloat("speed", Mathf.Clamp(1.0f + (speed - BASE_SPEED) / BASE_SPEED, 0.5f, 1.5f));
+        }
         if (Input.GetAxis("Vertical") <= 0) upKeyReleased = true;
 
         if (dashUnlocked && canDash && Input.GetKeyDown(KeyCode.E))
