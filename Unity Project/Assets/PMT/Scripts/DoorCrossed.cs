@@ -11,9 +11,16 @@ public class DoorCrossed : MonoBehaviour {
 	{
 		if (collider.gameObject.name == "porte+")
 		{
+			GameManager.roomsDone += 1;
+			Fading.blackening = 2;
 		Door porte = collider.gameObject.GetComponent<Door>();
 		if (porte != false) 
 		{
+				if (GameManager.roomsDone == 10)
+				{
+					Application.LoadLevel("Win");
+				}
+				Boss.bossLevel += 1;
 			NombreDoor ++;
 			string NameRoom = "Room0"+DoorCrossed.NombreDoor;
 			Application.LoadLevel (NameRoom);
@@ -21,9 +28,14 @@ public class DoorCrossed : MonoBehaviour {
 		}
 		else if (collider.gameObject.name == "porte-")
 		{
+			GameManager.roomsDone += 1;
 				Door porte = collider.gameObject.GetComponent<Door>();
 				if (porte != false) 
 				{
+				if (GameManager.roomsDone == 10)
+				{
+					Application.LoadLevel("Win");
+				}
 					string NameRoom = "Room0"+DoorCrossed.NombreDoor;
 					Application.LoadLevel (NameRoom);
 				}
