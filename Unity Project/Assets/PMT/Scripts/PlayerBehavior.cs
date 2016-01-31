@@ -22,6 +22,7 @@ public class PlayerBehavior : MonoBehaviour {
     public float GRAVITY = 10.0f;
     public float SLIDE_LENGTH = 1.5f;
     public float DASH_POWER = 3f;
+    public float JUMP_MAX_HEIGHT = 4.0f;
     float DASH_LENGTH = 0.3f;
     public float DASH_COOLDOWN_LENGTH = 2.0f;
     public float INVULNERABILITY_LENGTH = 0.5f;
@@ -187,8 +188,8 @@ public class PlayerBehavior : MonoBehaviour {
             transform.Translate(new Vector3(forwardMovement.x / 100.0f, verticalMovement.y, 0));
             if (yJumpReference != -1)
             {
-                transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, yJumpReference - 1.0f, yJumpReference + 4.0f), transform.position.z);
-                if (Mathf.Approximately(transform.position.y, yJumpReference + 4.0f)) apexReached = true;
+                transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, yJumpReference - 1.0f, yJumpReference + JUMP_MAX_HEIGHT), transform.position.z);
+                if (Mathf.Approximately(transform.position.y, yJumpReference + JUMP_MAX_HEIGHT)) apexReached = true;
             }
             if (Time.time - timerDashCooldown > DASH_COOLDOWN_LENGTH) canDash = true;
         }
