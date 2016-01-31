@@ -94,6 +94,7 @@ public class PlayerBehavior : MonoBehaviour {
                 dashing = true;
                 canDash = false;
                 timerDash = Time.time;
+                anim.SetBool("dashing", true);
             }
         }
 
@@ -139,11 +140,7 @@ public class PlayerBehavior : MonoBehaviour {
             // Jump
             if (!jumpCooldown && Input.GetAxis("Vertical") > 0)
             {
-                if (sliding)
-                {
-                    sliding = false;
-                    cController.enabled = true;
-                }
+                if (sliding) endSliding();
                 inAir = true;
                 jumpCooldown = true;
                 upKeyReleased = false;
@@ -157,13 +154,7 @@ public class PlayerBehavior : MonoBehaviour {
             {
                 if (slideUnlocked && Input.GetAxis("Vertical") < 0) slide();
             }
-            else if (Time.time - slideTimer > SLIDE_LENGTH)
-            {
-                sliding = false;
-                cController.enabled = true;
-                cController.height = 2;
-                cController.center = Vector3.zero;
-            }
+            else if (Time.time - slideTimer > SLIDE_LENGTH) endSliding();
         }
         forwardMovement = Vector3.right * speed;
         //transform.position = Vector3.MoveTowards(transform.position, transform.position + Vector3.right * speed, 1);
@@ -180,6 +171,7 @@ public class PlayerBehavior : MonoBehaviour {
             {
                 dashing = false;
                 timerDashCooldown = Time.time;
+                anim.SetBool("dashing", false);
             }
         }
     }
@@ -188,10 +180,20 @@ public class PlayerBehavior : MonoBehaviour {
 
     void slide()
     {
+        Debug.Log("slide");
         sliding = true;
         slideTimer = Time.time;
         cController.height = 1;
         cController.center = new Vector3(0, -0.5f, 0);
+        anim.SetBool("sliding", true);
+    }
+
+    void endSliding()
+    {
+        sliding = false;
+        cController.height = 2;
+        cController.center = Vector3.zero;
+        anim.SetBool("sliding", false);
     }
 
     void OnCollisionEnter(Collision coll)
@@ -243,6 +245,7 @@ public class PlayerBehavior : MonoBehaviour {
     {
         Debug.Log("death");
         dead = true;
+        anim.SetBool("dead", true);
         StartCoroutine(deathSequence(1.0f));
     }
 
