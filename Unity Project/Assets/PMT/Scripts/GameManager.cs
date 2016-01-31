@@ -3,6 +3,8 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour {
 
+	public static int roomsDone = 0;
+
 	// Use this for initialization
 	void Start () {
 	
