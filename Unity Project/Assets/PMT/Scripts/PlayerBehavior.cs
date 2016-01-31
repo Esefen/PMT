@@ -51,6 +51,7 @@ public class PlayerBehavior : MonoBehaviour {
     public bool doubleJumpUnlocked = true;
     public bool dashUnlocked = true;
     public bool shieldUnlocked = true;
+    bool dead = false;
 
 	// Use this for initialization
 	void Start () {
@@ -70,27 +71,30 @@ public class PlayerBehavior : MonoBehaviour {
             inflictDamage(5);
         }
 
-        if (Input.GetAxis("Horizontal") != 0)
+        if (!dead)
         {
-            if (Input.GetAxis("Horizontal") < 0) speed -= BASE_SPEED / 30.0f;
-            else speed += BASE_SPEED / 30.0f;
-            speed = Mathf.Clamp(speed, BASE_SPEED / 2.0f, BASE_SPEED * 2.0f);
-            float speedModifier = (speed - BASE_SPEED) / BASE_SPEED;
-            cam.changeXOffset(speedModifier);
-            anim.SetFloat("speed", Mathf.Clamp(1.0f + (speed - BASE_SPEED) / BASE_SPEED, 0.5f, 1.3f));
-        }
-        else
-        {
-            speed = Mathf.Lerp(speed, BASE_SPEED, 0.1f);
-            anim.SetFloat("speed", Mathf.Clamp(1.0f + (speed - BASE_SPEED) / BASE_SPEED, 0.5f, 1.5f));
-        }
-        if (Input.GetAxis("Vertical") <= 0) upKeyReleased = true;
+            if (Input.GetAxis("Horizontal") != 0)
+            {
+                if (Input.GetAxis("Horizontal") < 0) speed -= BASE_SPEED / 30.0f;
+                else speed += BASE_SPEED / 30.0f;
+                speed = Mathf.Clamp(speed, BASE_SPEED / 2.0f, BASE_SPEED * 2.0f);
+                float speedModifier = (speed - BASE_SPEED) / BASE_SPEED;
+                cam.changeXOffset(speedModifier);
+                anim.SetFloat("speed", Mathf.Clamp(1.0f + (speed - BASE_SPEED) / BASE_SPEED, 0.5f, 1.3f));
+            }
+            else
+            {
+                speed = Mathf.Lerp(speed, BASE_SPEED, 0.1f);
+                anim.SetFloat("speed", Mathf.Clamp(1.0f + (speed - BASE_SPEED) / BASE_SPEED, 0.5f, 1.5f));
+            }
+            if (Input.GetAxis("Vertical") <= 0) upKeyReleased = true;
 
-        if (dashUnlocked && canDash && Input.GetKeyDown(KeyCode.E))
-        {
-            dashing = true;
-            canDash = false;
-            timerDash = Time.time;
+            if (dashUnlocked && canDash && Input.GetKeyDown(KeyCode.E))
+            {
+                dashing = true;
+                canDash = false;
+                timerDash = Time.time;
+            }
         }
 
         if (inAir)
@@ -146,6 +150,7 @@ public class PlayerBehavior : MonoBehaviour {
                 timerJumpPower = Time.time;
                 jumpPower = BASE_JUMP;
                 verticalMovement = Vector3.up * jumpPower;
+                anim.SetBool("jumping", true);
             }
             // Slide
             else if (!sliding)
@@ -208,6 +213,7 @@ public class PlayerBehavior : MonoBehaviour {
         timerJumpCooldown = Time.time;
         verticalMovement = Vector3.zero;
         cController.SimpleMove(Vector3.down);
+        anim.SetBool("jumping", false);
     }
 
     #endregion
@@ -228,8 +234,28 @@ public class PlayerBehavior : MonoBehaviour {
                 hitPoints = Mathf.Clamp(hitPoints - damageValue, 0, MAX_HIT_POINTS);
                 refreshHitPoints();
             }
-			if (damageValue >= MAX_HIT_POINTS/100) cam.launchShake();
+            if (hitPoints == 0) death();
+            else if (damageValue >= MAX_HIT_POINTS / 100) cam.launchShake();
         }
+    }
+
+    void death()
+    {
+        Debug.Log("death");
+        dead = true;
+        StartCoroutine(deathSequence(1.0f));
+    }
+
+    IEnumerator deathSequence(float newTimeScale)
+    {
+        if (newTimeScale > 0)
+        {
+            Time.timeScale = newTimeScale;
+            speed = newTimeScale;
+            yield return new WaitForSeconds(0.05f);
+            StartCoroutine(deathSequence(newTimeScale - 0.1f));
+        }
+        else Application.LoadLevel(0);
     }
 
     void refreshHitPoints()
