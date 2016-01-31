@@ -56,6 +56,7 @@ public class PlayerBehavior : MonoBehaviour {
     bool dead = false;
 
     float yJumpReference = -1;
+    bool shieldDisplayed = false;
 
     void OnLevelWasLoaded()
     {
@@ -70,6 +71,7 @@ public class PlayerBehavior : MonoBehaviour {
         jumpPower = BASE_JUMP;
         GetComponent<MeshRenderer>().sortingLayerName = "Player";
         shield = transform.Find("Shield").GetComponent<SpriteRenderer>();
+        shield.color = new Color(1, 1, 1, 0);
         anim = transform.Find("Mesh").GetComponent<Animator>();
 	}
 	
@@ -77,6 +79,8 @@ public class PlayerBehavior : MonoBehaviour {
 	void Update () {
         if (!dead)
         {
+            if (Input.GetKeyDown(KeyCode.A)) inflictDamage(5);
+
             if (Input.GetAxis("Horizontal") != 0)
             {
                 if (Input.GetAxis("Horizontal") < 0) speed -= BASE_SPEED / 30.0f;
@@ -261,14 +265,20 @@ public class PlayerBehavior : MonoBehaviour {
     {
         if (Time.time - timerInvulnerability > INVULNERABILITY_LENGTH)
         {
-            speed /= 10.0f;
             timerInvulnerability = Time.time;
             if (shieldUnlocked && shieldPoints > 0)
             {
                 shieldPoints--;
+                if (!shieldDisplayed)
+                {
+                    shieldDisplayed = true;
+                    shield.enabled = true;
+                    StartCoroutine(displayShieldFeedback(0, 0.1f));
+                }
             }
             else
             {
+                speed /= 10.0f;
                 hitPoints = Mathf.Clamp(hitPoints - damageValue, 0, MAX_HIT_POINTS);
                 refreshHitPoints();
                 anim.SetBool("tookDamage", true);
@@ -276,6 +286,33 @@ public class PlayerBehavior : MonoBehaviour {
             }
             if (hitPoints == 0) death();
             else if (damageValue >= MAX_HIT_POINTS / 100) cam.launchShake();
+        }
+    }
+
+    IEnumerator displayShieldFeedback(float alpha, float alphaModifier)
+    {
+        alpha += alphaModifier;
+        shield.color = new Color(1, 1, 1, alpha);
+        yield return new WaitForSeconds(0.05f);
+        if (alpha < 1) StartCoroutine(displayShieldFeedback(alpha, alphaModifier));
+        else Invoke("hideShield", 0.5f);
+    }
+
+    void hideShield()
+    {
+        shieldDisplayed = false;
+        StartCoroutine(hideShieldCoroutine(1, -0.15f));
+    }
+
+    IEnumerator hideShieldCoroutine(float alpha, float alphaModifier)
+    {
+        if (!shieldDisplayed)
+        {
+            alpha += alphaModifier;
+            shield.color = new Color(1, 1, 1, alpha);
+            yield return new WaitForSeconds(0.05f);
+            if (alpha < 1) StartCoroutine(hideShieldCoroutine(alpha, alphaModifier));
+            else shield.enabled = false;
         }
     }
 
