@@ -16,7 +16,7 @@ public class Jelly : MonoBehaviour {
 		transform.localPosition -= transform.right * Speed * Time.deltaTime;
 	}
 	
-	void OnTriggerStay(Collider other)
+	void OnTriggerEnter(Collider other)
 	{
 		if (other.gameObject.tag == "Player")
 		{
