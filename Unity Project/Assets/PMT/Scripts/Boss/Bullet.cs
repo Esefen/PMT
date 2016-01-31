@@ -23,13 +23,13 @@ public class Bullet : MonoBehaviour {
 		{
 			Debug.Log("collide");
 			other.gameObject.GetComponent<PlayerBehavior>().inflictDamage(Damage);
-			this.Destroy(gameObject);
+			Destroy(gameObject);
 		}
 	}
 
 	void lifeEnd()
 	{
-		this.Destroy(gameObject);
+		Destroy(gameObject);
 	}
 }
 

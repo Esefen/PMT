@@ -187,8 +187,8 @@ public class PlayerBehavior : MonoBehaviour {
             transform.Translate(new Vector3(forwardMovement.x / 100.0f, verticalMovement.y, 0));
             if (yJumpReference != -1)
             {
-                transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, yJumpReference, yJumpReference * 2.5f), transform.position.z);
-                if (Mathf.Approximately(transform.position.y, yJumpReference * 2.5f)) apexReached = true;
+                transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, yJumpReference - 1.0f, yJumpReference + 4.0f), transform.position.z);
+                if (Mathf.Approximately(transform.position.y, yJumpReference + 4.0f)) apexReached = true;
             }
             if (Time.time - timerDashCooldown > DASH_COOLDOWN_LENGTH) canDash = true;
         }
