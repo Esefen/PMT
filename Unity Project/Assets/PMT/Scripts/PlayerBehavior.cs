@@ -58,9 +58,16 @@ public class PlayerBehavior : MonoBehaviour {
     float yJumpReference = -1;
     bool shieldDisplayed = false;
 
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
     void OnLevelWasLoaded()
     {
         findCameraReference();
+        transform.position = new Vector3(-15, transform.position.y, transform.position.z);
+        cam.transform.position = new Vector3(-45, cam.transform.position.y, cam.transform.position.z);
     }
 
 	// Use this for initialization
