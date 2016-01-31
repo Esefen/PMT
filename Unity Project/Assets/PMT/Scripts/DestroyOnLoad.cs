@@ -8,7 +8,7 @@ public class DestroyOnLoad : MonoBehaviour {
 		
 		if (GameObject.FindGameObjectsWithTag("Canvas").GetLength(0) > 1)
 		{
-			this.Destroy(gameObject);
+			Destroy(gameObject);
 		}
 	}
 		
