@@ -11,6 +11,7 @@ public class DoorCrossed : MonoBehaviour {
 	{
 		if (collider.gameObject.name == "porte+")
 		{
+			Fading.blackening = 2;
 		Door porte = collider.gameObject.GetComponent<Door>();
 		if (porte != false) 
 		{
