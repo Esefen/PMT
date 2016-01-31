@@ -12,7 +12,7 @@ public class Credits : MonoBehaviour {
 	void Update () {
 		if (Input.GetKeyDown(KeyCode.Return))
 		{
-		Application.LoadLevel("Menu");
+			Application.LoadLevel("Menu");
 		}
 	}
 }

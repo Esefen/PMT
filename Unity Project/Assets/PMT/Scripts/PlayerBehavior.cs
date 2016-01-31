@@ -9,6 +9,11 @@ public class PlayerBehavior : MonoBehaviour {
     SpriteRenderer shield;
     public Image hpBar;
 
+	public GameObject TextBox1;
+	public GameObject TextBox2;
+	public GameObject TextBox3;
+	public GameObject TextBox4;
+
     public float BASE_SPEED = 10f;
     public float BASE_JUMP = 10.0f;
     public float JUMP_INPUT_MAX_LENGTH = 0.4f;
@@ -241,18 +246,22 @@ public class PlayerBehavior : MonoBehaviour {
             case 2: BASE_SPEED *= 1.5f;
                 break;
             case 3: slideUnlocked = true;
+			TextBox1.SetActive(true);
                 break;
             case 4: BASE_JUMP *= 1.5f;
                 break;
             case 5: doubleJumpUnlocked = true;
+			TextBox2.SetActive(true);
                 break;
             case 6: BASE_JUMP *= 1.5f;
                 break;
             case 7: dashUnlocked = true;
+			TextBox3.SetActive(true);
                 break;
             case 8: DASH_POWER *= 1.5f;
                 break;
             case 9: shieldUnlocked = true;
+			TextBox4.SetActive(true);
                     shieldPoints = 1;
                 break;
             default: Debug.LogError("PlayerBehavior, levelUp: Incorrect level increase");
