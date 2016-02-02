@@ -42,13 +42,13 @@ public class MenuManager : MonoBehaviour {
 			Credits.GetComponent<Image>().color = Color.yellow;
 			Play.GetComponent<Image>().color = Color.white;
 		}
-	
-		if (Input.GetKeyDown(KeyCode.Return))
+
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.E))
 		{
 			if (onPlay == true){
 				Debug.Log("LoadScene(\"Room01\")");
 				// Application.LoadLevel("Room01");
-				SceneManager.LoadScene("Room01");
+				SceneManager.LoadScene("Room00");
 			} else if (onPlay == false){
 				Debug.Log("LoadScene(\"Credits\")");
 				// Application.LoadLevel("Credits");

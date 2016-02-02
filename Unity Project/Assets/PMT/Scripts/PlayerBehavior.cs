@@ -66,7 +66,8 @@ public class PlayerBehavior : MonoBehaviour {
     void OnLevelWasLoaded()
     {
         findCameraReference();
-        transform.position = new Vector3(-35, transform.position.y, transform.position.z);
+        transform.position = new Vector3(-35, 4.3f, transform.position.z);
+        speed = BASE_SPEED;
         //cam.transform.position = new Vector3(-45, cam.transform.position.y, cam.transform.position.z);
     }
 
@@ -199,7 +200,7 @@ public class PlayerBehavior : MonoBehaviour {
             transform.Translate(new Vector3(forwardMovement.x / 100.0f, verticalMovement.y, 0));
             if (yJumpReference != -1)
             {
-                transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, yJumpReference - 1.0f, yJumpReference + JUMP_MAX_HEIGHT), transform.position.z);
+                transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, yJumpReference - JUMP_MAX_HEIGHT, yJumpReference + JUMP_MAX_HEIGHT), transform.position.z);
                 if (Mathf.Approximately(transform.position.y, yJumpReference + JUMP_MAX_HEIGHT)) apexReached = true;
             }
             if (Time.time - timerDashCooldown > DASH_COOLDOWN_LENGTH) canDash = true;
