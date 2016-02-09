@@ -5,8 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour {
 
-	public GameObject Play;
-	public GameObject Credits;
+    public Text Play;
+    public Text Credits;
 
 	public bool onPlay = true;
 
@@ -19,28 +19,28 @@ public class MenuManager : MonoBehaviour {
 	void Update () {
 		if (Input.GetKeyDown(KeyCode.UpArrow))
 		{
-			Play.GetComponent<Image>().color = Color.yellow;
-			Credits.GetComponent<Image>().color = Color.white;
+			Play.color = Color.yellow;
+			Credits.color = Color.white;
 
 			onPlay = true;
 		}
 		else if (Input.GetKeyDown(KeyCode.DownArrow))
 		{
-			Credits.GetComponent<Image>().color = Color.yellow;
-			Play.GetComponent<Image>().color = Color.white;
+			Credits.color = Color.yellow;
+			Play.color = Color.white;
 
 			onPlay = false;
 		}
 
 		if (onPlay == true)
 		{
-			Credits.GetComponent<Image>().color = Color.white;
-			Play.GetComponent<Image>().color = Color.yellow;
+			Credits.color = Color.white;
+			Play.color = Color.yellow;
 		}
 		else if (onPlay == false)
 		{
-			Credits.GetComponent<Image>().color = Color.yellow;
-			Play.GetComponent<Image>().color = Color.white;
+			Credits.color = Color.yellow;
+			Play.color = Color.white;
 		}
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.E))

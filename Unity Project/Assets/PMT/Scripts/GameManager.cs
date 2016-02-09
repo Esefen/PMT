@@ -5,18 +5,8 @@ public class GameManager : MonoBehaviour {
 
 	public static int roomsDone = 0;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	void Awake()
 	{
-		DontDestroyOnLoad(transform.gameObject);
+		DontDestroyOnLoad(gameObject);
 	}
 }

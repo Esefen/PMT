@@ -4,6 +4,7 @@ using System.Collections;
 
 public class PlayerBehavior : MonoBehaviour {
 
+    public static PlayerBehavior player;
     CharacterController cController;
     CameraBehavior cam;
     SpriteRenderer shield;
@@ -60,7 +61,12 @@ public class PlayerBehavior : MonoBehaviour {
 
     void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        if (player == null)
+        {
+            player = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (player != this) Destroy(gameObject);
     }
 
     void OnLevelWasLoaded()

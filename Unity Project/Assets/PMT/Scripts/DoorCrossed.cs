@@ -12,8 +12,8 @@ public class DoorCrossed : MonoBehaviour {
 	{
 		if (collider.gameObject.name == "door+")
 		{
-			if (GameObject.Find("Player").GetComponent<PlayerBehavior>().isPoisoned == true)
-				GameObject.Find("Player").GetComponent<PlayerBehavior>().isPoisoned = false;
+            if (PlayerBehavior.player.isPoisoned)
+                PlayerBehavior.player.isPoisoned = false;
 
 			GameManager.roomsDone += 1;
 			Fading.blackening = 2;
@@ -32,8 +32,8 @@ public class DoorCrossed : MonoBehaviour {
 		}
 		else if (collider.gameObject.name == "door-")
 		{
-			if (GameObject.Find("Player").GetComponent<PlayerBehavior>().isPoisoned == true)
-				GameObject.Find("Player").GetComponent<PlayerBehavior>().isPoisoned = false;
+            if (PlayerBehavior.player.isPoisoned)
+                PlayerBehavior.player.isPoisoned = false;
 
 			GameManager.roomsDone += 1;
 			Fading.blackening = 2;
@@ -48,14 +48,6 @@ public class DoorCrossed : MonoBehaviour {
 					Application.LoadLevel (NameRoom);
 				}
 			}
-		}
-	// Use this for initialization
-	void Start () {
-
 	}
 
-	// Update is called once per frame
-	void Update () {
-
-	}
 }
